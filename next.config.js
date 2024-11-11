@@ -1,8 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    serverActions: {}, // Set to an empty object (or configure server actions as needed)
-    serverExternalPackages: ["mongoose"], // Renamed to serverExternalPackages
+    serverActions: {}, // If you're using server actions, configure them here
   },
   eslint: {
     // Warning: This allows production builds to successfully complete even if
