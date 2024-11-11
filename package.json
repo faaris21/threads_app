@@ -1,9 +1,4 @@
 {
-
-  "resolutions": {
-  "next": "^15.0.3"
-}
-
   "name": "threads",
   "version": "0.1.0",
   "private": true,
