@@ -1,4 +1,9 @@
 {
+
+  "resolutions": {
+  "next": "^15.0.3"
+}
+
   "name": "threads",
   "version": "0.1.0",
   "private": true,
@@ -35,7 +40,7 @@
     "mongodb": "^6.10.0",
     "mongoose": "^7.3.4",
     "mongose": "^0.0.2-security",
-    "next": "^15.0.4-canary.5",
+    "next": "^15.0.3",
     "postcss": "8.4.26",
     "prettier": "^3.0.0",
     "react": "18.2.0",
@@ -48,5 +53,7 @@
     "typescript": "5.1.6",
     "uploadthing": "^5.7.4",
     "zod": "^3.21.4"
+    
   }
+  
 }
