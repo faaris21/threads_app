@@ -1,61 +1,57 @@
-import { currentUser } from "@clerk/nextjs";
-import { redirect } from "next/navigation";
+'use client';
 
-import ThreadCard from "@/components/cards/ThreadCard";
-import Pagination from "@/components/shared/Pagination";
+import { useEffect, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { fetchPosts } from '@/lib/actions/thread.actions';
+import ThreadCard from '@/components/cards/ThreadCard';
+import Pagination from '@/components/shared/Pagination';
 
-import { fetchPosts } from "@/lib/actions/thread.actions";
-import { fetchUser } from "@/lib/actions/user.actions";
+export default function HomeClient({ user }: { user: any }) {
+  const [posts, setPosts] = useState<any[]>([]);  // Store posts in state
+  const [isNext, setIsNext] = useState(false);  // Store next page status
+  const searchParams = useSearchParams();
+  const page = searchParams.get('page') ? +searchParams.get('page') : 1;  // Get page number from search params
 
-async function Home({
-  searchParams,
-}: {
-  searchParams: { [key: string]: string | undefined };
-}) {
-  const user = await currentUser();
-  if (!user) return null;
-
-  const userInfo = await fetchUser(user.id);
-  if (!userInfo?.onboarded) redirect("/onboarding");
-
-  const result = await fetchPosts(
-    searchParams.page ? +searchParams.page : 1,
-    30
-  );
+  useEffect(() => {
+    // Fetch posts when the component is mounted
+    async function fetchData() {
+      const result = await fetchPosts(page, 30);  // Fetch posts based on current page
+      setPosts(result.posts);  // Update posts in state
+      setIsNext(result.isNext);  // Set next page status
+    }
+    
+    fetchData();  // Call the async function
+  }, [page]);  // Re-run when `page` changes
 
   return (
     <>
-      <h1 className='head-text text-left'>Home</h1>
+      <h1 className="head-text text-left">Home</h1>
 
-      <section className='mt-9 flex flex-col gap-10'>
-        {result.posts.length === 0 ? (
-          <p className='no-result'>No threads found</p>
+      <section className="mt-9 flex flex-col gap-10">
+        {posts.length === 0 ? (
+          <p className="no-result">No threads found</p>
         ) : (
-          <>
-            {result.posts.map((post) => (
-              <ThreadCard
-                key={post._id}
-                id={post._id}
-                currentUserId={user.id}
-                parentId={post.parentId}
-                content={post.text}
-                author={post.author}
-                community={post.community}
-                createdAt={post.createdAt}
-                comments={post.children}
-              />
-            ))}
-          </>
+          posts.map((post) => (
+            <ThreadCard
+              key={post._id}
+              id={post._id}
+              currentUserId={user.id}
+              parentId={post.parentId}
+              content={post.text}
+              author={post.author}
+              community={post.community}
+              createdAt={post.createdAt}
+              comments={post.children}
+            />
+          ))
         )}
       </section>
 
       <Pagination
-        path='/'
-        pageNumber={searchParams?.page ? +searchParams.page : 1}
-        isNext={result.isNext}
+        path="/"
+        pageNumber={page}
+        isNext={isNext}
       />
     </>
   );
 }
-
-export default Home;
